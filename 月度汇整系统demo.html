@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base target="_top">
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDF1EC; --card:#FFFFFF; --ink:#243530; --ink-soft:#5B6B65;
+    --teal:#3F7A68; --teal-deep:#2C5A4C; --teal-pale:#E7F0EA;
+    --gold:#C9973B; --rose:#B76E79; --line:#DCE3DD;
+    --shadow: 0 8px 24px rgba(36,53,48,0.08);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Noto Sans TC',sans-serif;font-size:15px;}
+  .wrap{max-width:1100px;margin:0 auto;padding:22px 20px 55px;}
+  .topbar{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;margin-bottom:6px;}
+  h1{font-family:'Noto Serif TC',serif;font-size:25px;margin:0;}
+  .eyebrow{font-size:12.5px;letter-spacing:2px;color:var(--teal-deep);font-weight:700;margin-bottom:6px;}
+  .controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .month-switch{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 8px;box-shadow:var(--shadow);}
+  .month-switch button{width:28px;height:28px;border-radius:50%;border:none;background:var(--teal-pale);color:var(--teal-deep);cursor:pointer;font-weight:700;font-size:15px;}
+  .month-switch .m-label{font-size:15px;font-weight:700;min-width:88px;text-align:center;}
+  .ghost-btn{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-size:14px;font-weight:700;color:var(--teal-deep);cursor:pointer;box-shadow:var(--shadow);}
+  .icon-btn{background:none;border:none;box-shadow:none;padding:6px;font-size:19px;cursor:pointer;line-height:1;color:var(--ink-soft);}
+  .icon-btn:hover{color:var(--teal-deep);}
+  .subtitle{color:var(--ink-soft);font-size:14px;margin:10px 0 20px;}
+  .rep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
+  .rep-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow);cursor:pointer;}
+  .rep-card:hover{border-color:var(--teal);}
+  .rep-card .name{font-family:'Noto Serif TC',serif;font-size:18px;font-weight:700;margin-bottom:8px;}
+  .rep-card .meta{display:flex;justify-content:space-between;font-size:13.5px;color:var(--ink-soft);}
+  .count-badge{background:var(--teal-pale);color:var(--teal-deep);font-weight:700;padding:3px 10px;border-radius:999px;}
+  .add-rep-card{display:flex;align-items:center;justify-content:center;border:1.5px dashed var(--line);border-radius:14px;color:var(--ink-soft);font-size:14.5px;font-weight:700;cursor:pointer;min-height:84px;}
+  .back-btn{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:999px;color:var(--teal-deep);font-weight:700;font-size:14px;cursor:pointer;margin-bottom:14px;padding:8px 16px;box-shadow:var(--shadow);}
+  .back-btn:hover{border-color:var(--teal);}
+  .detail-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
+  .detail-head h2{font-family:'Noto Serif TC',serif;font-size:22px;margin:0;}
+  .m-tag{font-size:12.5px;background:var(--teal-pale);color:var(--teal-deep);padding:4px 12px;border-radius:999px;font-weight:700;}
+  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;}
+  @media (max-width:820px){ .detail-grid{grid-template-columns:1fr;} }
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;box-shadow:var(--shadow);}
+  .card h3{font-family:'Noto Serif TC',serif;font-size:17px;margin:0 0 4px;color:var(--teal-deep);}
+  .card .hint{font-size:13.5px;color:var(--ink-soft);margin:0 0 14px;}
+  .record-list{max-height:260px;overflow-y:auto;margin-bottom:14px;}
+  .record-item{border-bottom:1px solid var(--line);padding:10px 0;font-size:14px;line-height:1.7;}
+  .record-item .r-head{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--ink-soft);font-weight:700;}
+  .r-actions{display:flex;gap:6px;}
+  .r-edit{color:var(--teal-deep);cursor:pointer;background:none;border:none;font-size:13px;font-weight:700;padding:2px;}
+  .r-del{color:var(--rose);cursor:pointer;background:none;border:none;font-size:13px;font-weight:700;padding:2px;}
+  .record-empty{color:var(--ink-soft);font-size:14px;padding:18px 0;text-align:center;}
+  .input-tabs{display:flex;gap:6px;margin-bottom:10px;}
+  .input-tab{padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:#FAFBF9;font-size:13px;color:var(--ink-soft);cursor:pointer;font-weight:700;}
+  .input-tab.active{background:var(--teal);border-color:var(--teal);color:#fff;}
+  .field{margin-bottom:11px;}
+  .field label{display:block;font-size:13px;font-weight:700;margin-bottom:4px;}
+  .type-row{display:flex;gap:8px;margin-bottom:4px;}
+  .type-btn{flex:1;height:36px;line-height:36px;padding:0 4px;border-radius:9px;border:1px solid var(--line);background:#FAFBF9;font-size:12px;font-weight:700;cursor:pointer;color:var(--ink-soft);font-family:inherit;text-align:center;outline:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .type-btn:focus{outline:none;box-shadow:none;}
+  .type-btn:focus-visible{box-shadow:0 0 0 2px var(--line);}
+  .type-btn.positive.active{background:var(--teal-pale);border-color:var(--teal);color:var(--teal-deep);}
+  .type-btn.negative.active{background:#F7E9EA;border-color:var(--rose);color:var(--rose);}
+  .type-btn.type-note.active{background:var(--gold-pale, #F7ECD6);border-color:var(--gold);color:#8B5A2B;}
+  .type-tag{font-size:13px;margin-right:4px;}
+  .entry-block{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:14px;}
+  .entry-block .type-row{margin-bottom:10px;}
+  .entry-block textarea{background:#FFFFFF;}
+  input[type=text], textarea, select{width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--line);font-family:'Noto Sans TC',sans-serif;font-size:14.5px;background:#F1F5F2;color:var(--ink);}
+  select{cursor:pointer;}
+  textarea{min-height:76px;resize:vertical;}
+  input:focus, textarea:focus, select:focus{outline:2px solid var(--teal);outline-offset:1px;border-color:transparent;}
+  button.primary{width:100%;padding:11px;border:none;border-radius:9px;background:var(--teal);color:#fff;font-size:14.5px;font-weight:700;cursor:pointer;font-family:inherit;}
+  button.primary:hover{background:var(--teal-deep);}
+  button.primary:disabled{background:#A9B7B1;cursor:not-allowed;}
+  button.secondary{width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:#FAFBF9;color:var(--ink);font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px;}
+  button.secondary:hover{border-color:var(--teal);color:var(--teal-deep);}
+  .note{position:relative;background:linear-gradient(180deg,#FFFDF8,#FFFFFF);border:1px dashed var(--gold);border-radius:12px;padding:18px 20px;min-height:160px;}
+  .note-empty{color:var(--ink-soft);font-size:14px;text-align:center;padding:32px 8px;}
+  .note-body{font-size:15px;line-height:1.85;white-space:pre-wrap;}
+  .note-body .sum-title{color:#8B5A2B;font-weight:700;}
+  .note-meta{font-size:11.5px;color:var(--ink-soft);margin-top:10px;text-align:right;}
+  .loading{display:flex;align-items:center;gap:8px;color:var(--ink-soft);font-size:14px;padding:32px 8px;justify-content:center;}
+  .spinner{width:14px;height:14px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--teal);animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .actions{display:flex;gap:8px;margin-top:12px;}
+  .actions button{flex:1;padding:9px;border-radius:8px;border:1px solid var(--line);background:#FAFBF9;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
+  .actions button:hover{border-color:var(--teal);}
+  .error{color:var(--rose);font-size:13px;margin-top:8px;}
+  .modal-overlay{position:fixed;inset:0;background:rgba(36,53,48,0.35);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px;}
+  .modal{background:var(--card);border-radius:14px;padding:24px;max-width:420px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,0.2);}
+  .modal h3{font-family:'Noto Serif TC',serif;margin-top:0;font-size:18px;}
+  .rep-manage-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:14.5px;}
+  .rep-manage-item button{background:none;border:none;color:var(--rose);cursor:pointer;font-size:13px;font-weight:700;}
+  .modal-close{background:none;border:none;color:var(--ink-soft);font-size:13.5px;cursor:pointer;margin-top:14px;width:100%;text-align:center;font-weight:700;}
+  .checkbox-grid{display:flex;flex-wrap:wrap;gap:10px 20px;margin-top:6px;}
+  .rep-checkbox{display:flex;align-items:center;gap:7px;font-size:14px;cursor:pointer;}
+  .rep-checkbox input{cursor:pointer;width:16px;height:16px;}
+  .overview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px;align-items:stretch;}
+  .overview-grid .card{display:flex;flex-direction:column;}
+  .overview-grid .card .note,
+  .overview-grid .card .record-list{flex:1 1 auto;}
+  .dropdown{position:relative;}
+  .dropdown-menu{display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);min-width:170px;z-index:40;overflow:hidden;}
+  .dropdown-menu.open{display:block;}
+  .dropdown-item{display:block;width:100%;text-align:left;padding:10px 14px;background:none;border:none;font-size:13.5px;font-weight:700;color:var(--ink);cursor:pointer;font-family:inherit;}
+  .dropdown-item:hover{background:var(--teal-pale);color:var(--teal-deep);}
+  .date-tip{position:relative;display:inline-block;border-bottom:1px dashed var(--gold);cursor:help;font-weight:700;}
+  .date-tip .tip-bubble{
+    visibility:hidden;opacity:0;position:absolute;bottom:130%;left:50%;transform:translateX(-50%);
+    background:var(--ink);color:#fff;padding:8px 10px;border-radius:8px;font-size:12px;line-height:1.6;
+    white-space:normal;width:220px;z-index:30;box-shadow:0 6px 16px rgba(0,0,0,0.28);
+    transition:opacity .12s ease;pointer-events:none;font-weight:400;text-align:left;
+  }
+  .date-tip:hover .tip-bubble{visibility:visible;opacity:1;}
+</style>
+</head>
+<body>
+<div style="background:#8B5A2B;color:#fff;text-align:center;padding:9px 12px;font-size:13.5px;font-weight:700;">
+  🔎 這是功能展示用的 DEMO 版本，所有資料僅為示範內容，不會真的儲存，重新整理頁面就會恢復原狀，歡迎隨意操作體驗。
+</div>
+<div class="wrap" id="app">載入中...</div>
+
+<script>
+let reps = [];
+const AUTHOR_OPTIONS = ['🐱','🩰','🐙','🎏','😀','🦷'];
+let currentMonth = getCurrentMonthKey();
+let selectedRepId = null; // 這裡直接用姓名當 id
+let recordsCache = {};
+let summaryCache = {};
+let comparisonCache = {};
+let generatingComparison = false;
+let comparisonError = '';
+let editingRecordId = null;
+let formDraft = { date:'', author:'', entries:[{type:'', content:''}] };
+let editFormDraft = { date:'', author:'', type:'', content:'' };
+let showManageModal = false;
+let showContextModal = false;
+let generating = false;
+let genError = '';
+let teamContext = '';
+let viewMode = 'grid'; // 'grid' | 'overview'
+let overviewSelected = new Set();
+let overviewGenerating = {};
+let overviewErrors = {};
+let gridDataCache = {};
+let allSummariesCache = {};
+let allRecordsCache = {};
+let allComparisonsCache = {};
+let comparisonOverviewGenerating = {};
+let comparisonOverviewErrors = {};
+let batchSummaryGenerating = false;
+let batchSummaryResult = null;
+let batchComparisonGenerating = false;
+let batchComparisonResult = null;
+let exportMessage = '';
+
+function getCurrentMonthKey(){
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+}
+function monthLabel(key){
+  const [y,m] = key.split('-');
+  return y + '年' + parseInt(m,10) + '月';
+}
+function resetFormDraft(){ formDraft = { date:'', author:'', entries:[{type:'', content:''}] }; }
+function resetEditFormDraft(){ editFormDraft = { date:'', author:'', type:'', content:'' }; }
+function shiftMonth(key, delta){
+  let [y,m] = key.split('-').map(Number);
+  m += delta; if(m<1){m=12;y--;} if(m>12){m=1;y++;}
+  return y + '-' + String(m).padStart(2,'0');
+}
+
+/* ==================================================================
+   DEMO 模擬後端：以下取代原本呼叫 Google Apps Script 的 gsrun()，
+   改用瀏覽器記憶體內的假資料模擬所有功能，方便獨立部署成靜態展示網站。
+   （正式版本請改回原本呼叫 google.script.run 的 gsrun()）
+   ================================================================== */
+function _demoMonthKey(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0'); }
+function _demoShiftMonth(key, delta){
+  let [y,m] = key.split('-').map(Number);
+  m += delta; if(m<1){m=12;y--;} if(m>12){m=1;y++;}
+  return y + '-' + String(m).padStart(2,'0');
+}
+const DEMO_THIS_MONTH = _demoMonthKey(new Date());
+const DEMO_LAST_MONTH = _demoShiftMonth(DEMO_THIS_MONTH, -1);
+function _demoMonthLabel(key){ const [y,m]=key.split('-'); return y+'年'+parseInt(m,10)+'月'; }
+function _demoDay(n){ const [,m] = DEMO_THIS_MONTH.split('-'); return parseInt(m,10)+'/'+n; }
+function _demoPrevDay(n){ const [,m] = DEMO_LAST_MONTH.split('-'); return parseInt(m,10)+'/'+n; }
+
+const MOCK_REPS = ['小美', '阿凱', 'Chris', 'Ivy', '家豪', '佩珊'];
+const MOCK_CONTEXT = '我們是早班客服團隊示範資料。記錄中若提到「晚班」，通常是指晚班交接給早班、早班需接續處理並口頭更新進度；若未口頭更新，屬待改善而非優點。';
+
+const MOCK_RECORDS = {
+  '小美': [
+    { month:DEMO_THIS_MONTH, date:_demoDay(3), author:'🐱', content:'晚班交接的會員解鎖問題，後續有回覆但未打口頭更新進度給同事', id:'d1', type:'negative' },
+    { month:DEMO_THIS_MONTH, date:_demoDay(9), author:'🐙', content:'教過小美跨平台黑名單查核流程，已示範操作一次', id:'d2', type:'note' },
+    { month:DEMO_THIS_MONTH, date:_demoDay(15), author:'😀', content:'協助會員解綁綁定裝置，主動介入處理，會員反應良好', id:'d3', type:'positive' },
+    { month:DEMO_LAST_MONTH, date:_demoPrevDay(6), author:'🐱', content:'交接事項未主動追蹤後續進度', id:'d4', type:'negative' }
+  ],
+  '阿凱': [
+    { month:DEMO_THIS_MONTH, date:_demoDay(5), author:'🎏', content:'活動核銷流程操作正確，效率佳，主動協助同事排除問題', id:'d5', type:'positive' },
+    { month:DEMO_THIS_MONTH, date:_demoDay(12), author:'😀', content:'對於新版退款規則判斷仍不熟悉，重複詢問窗口', id:'d6', type:'negative' },
+    { month:DEMO_LAST_MONTH, date:_demoPrevDay(4), author:'🎏', content:'退款規則已教學過一次', id:'d7', type:'note' }
+  ],
+  'Chris': [],
+  'Ivy': [
+    { month:DEMO_THIS_MONTH, date:_demoDay(2), author:'🦷', content:'處理緊急客訴時反應迅速，妥善安撫會員情緒', id:'d8', type:'positive' },
+    { month:DEMO_THIS_MONTH, date:_demoDay(20), author:'🦷', content:'班表交接紀錄漏填，導致早班無法掌握進度', id:'d9', type:'negative' }
+  ],
+  '家豪': [
+    { month:DEMO_THIS_MONTH, date:_demoDay(8), author:'🐙', content:'後台操作路徑不熟悉，多次詢問轉接流程', id:'d10', type:'negative' }
+  ],
+  '佩珊': [
+    { month:DEMO_LAST_MONTH, date:_demoPrevDay(11), author:'😀', content:'窗口回覆速度快，客訴處理效率佳', id:'d11', type:'positive' }
+    // 佩珊本月尚未有任何記錄，用於示範「本月無記錄」的呈現方式
+  ]
+};
+
+const MOCK_SUMMARY = {};
+MOCK_SUMMARY['小美:'+DEMO_THIS_MONTH] = {
+  text: '**本月總覽**\n表現尚可，仍有交接與流程熟悉度待加強\n\n**優點**\n- 主動介入協助會員解綁裝置('+_demoDay(15)+')\n\n**待改善**\n- 晚班交接後未口頭更新進度('+_demoDay(3)+')\n- 跨平台黑名單查核流程不熟悉('+_demoDay(9)+')('+_demoDay(9)+'已教學過，同月內仍再犯)\n\n**建議約談重點**\n- 提醒交接後務必口頭同步進度\n- 複習黑名單查核流程',
+  generatedAt: new Date(Date.now()-3600000).toISOString()
+};
+const MOCK_COMPARISON = {};
+MOCK_COMPARISON['佩珊:'+DEMO_THIS_MONTH] = {
+  text: '這個月（'+_demoMonthLabel(DEMO_THIS_MONTH)+'）沒有任何記錄，無法進行本月與上個月的比較分析。',
+  generatedAt: new Date(Date.now()-7200000).toISOString()
+};
+
+function gsrun(fnName, args){
+  return new Promise((resolve)=>{
+    setTimeout(()=>{
+      if(fnName==='getReps') return resolve(MOCK_REPS.slice());
+      if(fnName==='getTeamContext') return resolve(MOCK_CONTEXT);
+
+      if(fnName==='getGridData'){
+        const [month] = args;
+        return resolve(MOCK_REPS.map(name=>{
+          const list = (MOCK_RECORDS[name]||[]).filter(r=>r.month===month);
+          return { rep:name, count:list.length, hasSummary: !!MOCK_SUMMARY[name+':'+month], hasComparison: !!MOCK_COMPARISON[name+':'+month] };
+        }));
+      }
+      if(fnName==='getRecords'){
+        const [rep, month] = args;
+        return resolve((MOCK_RECORDS[rep]||[]).filter(r=>r.month===month));
+      }
+      if(fnName==='getAllRecords'){
+        const [month] = args;
+        const result = {};
+        MOCK_REPS.forEach(r=>{ result[r] = (MOCK_RECORDS[r]||[]).filter(x=>x.month===month); });
+        return resolve(result);
+      }
+      if(fnName==='getAllComparisons'){
+        const [month] = args;
+        const result = {};
+        MOCK_REPS.forEach(r=>{ result[r] = MOCK_COMPARISON[r+':'+month] || null; });
+        return resolve(result);
+      }
+      if(fnName==='getRepDetail'){
+        const [rep, month] = args;
+        return resolve({
+          records: (MOCK_RECORDS[rep]||[]).filter(r=>r.month===month),
+          summary: MOCK_SUMMARY[rep+':'+month] || null,
+          comparison: MOCK_COMPARISON[rep+':'+month] || null
+        });
+      }
+      if(fnName==='getSummary'){ const [rep, month] = args; return resolve(MOCK_SUMMARY[rep+':'+month] || null); }
+      if(fnName==='getComparison'){ const [rep, month] = args; return resolve(MOCK_COMPARISON[rep+':'+month] || null); }
+      if(fnName==='getAllSummaries'){
+        const [month] = args;
+        const result = {};
+        MOCK_REPS.forEach(r=>{ result[r] = MOCK_SUMMARY[r+':'+month] || null; });
+        return resolve(result);
+      }
+
+      if(fnName==='generateSummary'){
+        const [rep, month] = args;
+        const list = (MOCK_RECORDS[rep]||[]).filter(r=>r.month===month);
+        let text;
+        if(list.length===0){
+          text = '這個月目前沒有任何記錄，暫無摘要內容。這可能代表這個月表現穩定、沒有特別需要記錄的狀況，也可能是這個月還沒有填寫記錄，建議與干部確認實際情形。';
+        } else {
+          const pos = list.filter(r=>r.type==='positive').map(r=>`- ${r.content.slice(0,16)}...(${r.date})`).join('\n') || '無';
+          const neg = list.filter(r=>r.type==='negative').map(r=>`- ${r.content.slice(0,16)}...(${r.date})`).join('\n') || '無';
+          text = `**本月總覽**\n(示範摘要，非真實AI產生)\n\n**優點**\n${pos}\n\n**待改善**\n${neg}\n\n**建議約談重點**\n- 依上述內容約談討論`;
+        }
+        const result = { text, generatedAt: new Date().toISOString() };
+        MOCK_SUMMARY[rep+':'+month] = result;
+        return resolve(result);
+      }
+      if(fnName==='generateComparison'){
+        const [rep, month] = args;
+        const prevMonth = _demoShiftMonth(month, -1);
+        const prevList = (MOCK_RECORDS[rep]||[]).filter(r=>r.month===prevMonth);
+        let text;
+        if(prevList.length===0){
+          text = '上個月（'+_demoMonthLabel(prevMonth)+'）沒有任何記錄，無法進行本月與上月的比較分析。';
+        } else {
+          text = `**整體趨勢**\n(示範比較分析，非真實AI產生)\n\n**進步之處**\n- 部分上月問題本月未再發生\n\n**仍需加強**\n- 部分待改善事項持續存在\n\n**本月新增優點**\n- 本月新增的正面表現`;
+        }
+        const result = { text, generatedAt: new Date().toISOString() };
+        MOCK_COMPARISON[rep+':'+month] = result;
+        return resolve(result);
+      }
+
+      if(fnName==='generateAllSummaries'){
+        const [month] = args;
+        const results = MOCK_REPS.map(name=>{
+          if(MOCK_SUMMARY[name+':'+month]){ return { rep:name, status:'skipped' }; }
+          const list = (MOCK_RECORDS[name]||[]).filter(r=>r.month===month);
+          const text = list.length===0
+            ? '這個月目前沒有任何記錄，暫無摘要內容。'
+            : `**本月總覽**\n(示範摘要，一鍵批次產生)`;
+          MOCK_SUMMARY[name+':'+month] = { text, generatedAt: new Date().toISOString() };
+          return { rep:name, status:'success' };
+        });
+        return resolve(results);
+      }
+      if(fnName==='generateAllComparisons'){
+        const [month] = args;
+        const prevMonth = _demoShiftMonth(month, -1);
+        const results = MOCK_REPS.map(name=>{
+          if(MOCK_COMPARISON[name+':'+month]){ return { rep:name, status:'skipped' }; }
+          const prevList = (MOCK_RECORDS[name]||[]).filter(r=>r.month===prevMonth);
+          if(prevList.length===0){
+            const text = '上個月（'+_demoMonthLabel(prevMonth)+'）沒有任何記錄，無法進行本月與上月的比較分析。';
+            MOCK_COMPARISON[name+':'+month] = { text, generatedAt: new Date().toISOString() };
+            return { rep:name, status:'success' };
+          }
+          MOCK_COMPARISON[name+':'+month] = { text:`**整體趨勢**\n(示範比較分析，一鍵批次產生)`, generatedAt: new Date().toISOString() };
+          return { rep:name, status:'success' };
+        });
+        return resolve(results);
+      }
+
+      if(fnName==='addRecord'){
+        const [rep, month, date, author, content, type] = args;
+        const id = 'demo_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+        if(!MOCK_RECORDS[rep]) MOCK_RECORDS[rep]=[];
+        MOCK_RECORDS[rep].push({ month, date, author, content, id, type });
+        return resolve(id);
+      }
+      if(fnName==='updateRecord'){
+        const [rep, id, date, author, content, type] = args;
+        const list = MOCK_RECORDS[rep]||[];
+        const r = list.find(x=>x.id===id);
+        if(r){ r.date=date; r.author=author; r.content=content; r.type=type; }
+        return resolve(true);
+      }
+      if(fnName==='deleteRecord'){
+        const [rep, id] = args;
+        Object.keys(MOCK_RECORDS).forEach(r2=>{ MOCK_RECORDS[r2] = MOCK_RECORDS[r2].filter(x=>x.id!==id); });
+        return resolve(true);
+      }
+      if(fnName==='addReps'){
+        const [namesRaw] = args;
+        namesRaw.split(/[,，\n]/).map(s=>s.trim()).filter(Boolean).forEach(n=>{
+          if(MOCK_REPS.indexOf(n)===-1){ MOCK_REPS.push(n); MOCK_RECORDS[n]=[]; }
+        });
+        return resolve(MOCK_REPS.slice());
+      }
+      if(fnName==='removeRep'){
+        const [name] = args;
+        const idx = MOCK_REPS.indexOf(name);
+        if(idx>-1) MOCK_REPS.splice(idx,1);
+        return resolve(MOCK_REPS.slice());
+      }
+      if(fnName==='saveTeamContext'){ return resolve(true); }
+
+      resolve(null);
+    }, 500);
+  });
+}
+
+async function init(){
+  try{
+    const [repsResult, contextResult] = await Promise.all([
+      gsrun('getReps'),
+      gsrun('getTeamContext')
+    ]);
+    reps = repsResult;
+    teamContext = contextResult;
+  }catch(e){ console.error(e); reps = []; }
+  render();
+}
+
+async function loadRecordsFor(rep, month){
+  const key = rep+':'+month;
+  if(recordsCache[key]) return recordsCache[key];
+  const data = await gsrun('getRecords', [rep, month]);
+  recordsCache[key] = data || [];
+  return recordsCache[key];
+}
+async function loadSummaryFor(rep, month){
+  const key = rep+':'+month;
+  if(summaryCache[key] !== undefined) return summaryCache[key];
+  const data = await gsrun('getSummary', [rep, month]);
+  summaryCache[key] = data || null;
+  return summaryCache[key];
+}
+async function loadComparisonFor(rep, month){
+  const key = rep+':'+month;
+  if(comparisonCache[key] !== undefined) return comparisonCache[key];
+  const data = await gsrun('getComparison', [rep, month]);
+  comparisonCache[key] = data || null;
+  return comparisonCache[key];
+}
+
+async function addReps(namesRaw){
+  reps = await gsrun('addReps', [namesRaw]);
+  gridDataCache = {};
+  allSummariesCache = {};
+  render();
+}
+async function removeRepAction(name){
+  reps = await gsrun('removeRep', [name]);
+  gridDataCache = {};
+  allSummariesCache = {};
+  render();
+}
+async function saveTeamContextAction(text){
+  await gsrun('saveTeamContext', [text]);
+  teamContext = text;
+}
+async function addRecordAction(rep, month, date, author, content, type){
+  const key = rep+':'+month;
+  await gsrun('addRecord', [rep, month, date, author, content, type]);
+  delete recordsCache[key];
+  delete gridDataCache[month];
+  delete allRecordsCache[month];
+  await loadRecordsFor(rep, month);
+}
+async function updateRecordAction(rep, month, id, date, author, content, type){
+  await gsrun('updateRecord', [rep, id, date, author, content, type]);
+  const key = rep+':'+month;
+  delete recordsCache[key];
+  delete allRecordsCache[month];
+  await loadRecordsFor(rep, month);
+}
+async function deleteRecordAction(rep, month, id){
+  await gsrun('deleteRecord', [rep, id]);
+  const key = rep+':'+month;
+  delete recordsCache[key];
+  delete gridDataCache[month];
+  delete allRecordsCache[month];
+  await loadRecordsFor(rep, month);
+  render();
+}
+
+async function generateSummaryAction(rep, month){
+  generating = true; genError=''; render();
+  try{
+    const result = await gsrun('generateSummary', [rep, month, monthLabel(month)]);
+    summaryCache[rep+':'+month] = result;
+    delete gridDataCache[month];
+    delete allSummariesCache[month];
+  }catch(e){
+    genError = '發生錯誤：' + (e && e.message ? e.message : e);
+  }finally{
+    generating = false;
+    render();
+  }
+}
+
+async function generateComparisonAction(rep, month){
+  generatingComparison = true; comparisonError=''; render();
+  try{
+    const result = await gsrun('generateComparison', [rep, month, monthLabel(month)]);
+    comparisonCache[rep+':'+month] = result;
+    delete allComparisonsCache[month];
+  }catch(e){
+    comparisonError = '發生錯誤：' + (e && e.message ? e.message : e);
+  }finally{
+    generatingComparison = false;
+    render();
+  }
+}
+
+/* ---------- rendering (與網頁版邏輯相同) ---------- */
+const app = document.getElementById('app');
+function render(){
+  if(viewMode==='overview'){ renderOverview(); }
+  else if(viewMode==='records-overview'){ renderRecordsOverview(); }
+  else if(viewMode==='comparison-overview'){ renderComparisonOverview(); }
+  else if(selectedRepId){ renderDetail(); }
+  else { renderGrid(); }
+}
+
+function headerHTML(){
+  return `
+  <div class="topbar">
+    <div>
+      <div class="eyebrow">客服團隊 · 示範資料</div>
+      <h1>月度彙整系統</h1>
+    </div>
+    <div class="controls">
+      <div class="month-switch">
+        <button id="prevMonth">‹</button>
+        <div class="m-label">${monthLabel(currentMonth)}</div>
+        <button id="nextMonth">›</button>
+      </div>
+      <div class="dropdown" id="overviewDropdown">
+        <button class="ghost-btn" id="overviewDropdownBtn">全部總覽 ▾</button>
+        <div class="dropdown-menu" id="overviewDropdownMenu">
+          <button class="dropdown-item" id="recordsOverviewBtn">本月記錄總覽</button>
+          <button class="dropdown-item" id="overviewBtn">月度摘要總覽</button>
+          <button class="dropdown-item" id="comparisonOverviewBtn">上月比較總覽</button>
+        </div>
+      </div>
+      <div class="dropdown" id="settingsDropdown">
+        <button class="ghost-btn" id="settingsDropdownBtn">⚙️ 設定</button>
+        <div class="dropdown-menu" id="settingsDropdownMenu">
+          <button class="dropdown-item" id="manageBtn">管理客服名單</button>
+          <button class="dropdown-item" id="contextBtn">記錄判讀說明</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="subtitle">資料直接存在這份試算表裡，權限由試算表的共用設定控管。</p>`;
+}
+
+let dropdownGlobalListenerAdded = false;
+
+function bindHeaderEvents(){
+  document.getElementById('prevMonth').addEventListener('click', ()=>{ currentMonth = shiftMonth(currentMonth,-1); render(); });
+  document.getElementById('nextMonth').addEventListener('click', ()=>{ currentMonth = shiftMonth(currentMonth,1); render(); });
+
+  const menu = document.getElementById('overviewDropdownMenu');
+  document.getElementById('overviewDropdownBtn').addEventListener('click', (e)=>{
+    e.stopPropagation();
+    document.getElementById('settingsDropdownMenu').classList.remove('open');
+    menu.classList.toggle('open');
+  });
+  document.getElementById('overviewBtn').addEventListener('click', ()=>{ menu.classList.remove('open'); viewMode='overview'; selectedRepId=null; render(); });
+  document.getElementById('recordsOverviewBtn').addEventListener('click', ()=>{ menu.classList.remove('open'); viewMode='records-overview'; selectedRepId=null; render(); });
+  document.getElementById('comparisonOverviewBtn').addEventListener('click', ()=>{ menu.classList.remove('open'); viewMode='comparison-overview'; selectedRepId=null; render(); });
+
+  const settingsMenu = document.getElementById('settingsDropdownMenu');
+  document.getElementById('settingsDropdownBtn').addEventListener('click', (e)=>{
+    e.stopPropagation();
+    menu.classList.remove('open');
+    settingsMenu.classList.toggle('open');
+  });
+  document.getElementById('manageBtn').addEventListener('click', ()=>{ settingsMenu.classList.remove('open'); renderManageModal(); });
+  document.getElementById('contextBtn').addEventListener('click', ()=>{ settingsMenu.classList.remove('open'); renderContextModal(); });
+
+  if(!dropdownGlobalListenerAdded){
+    document.addEventListener('click', ()=>{
+      const m = document.getElementById('overviewDropdownMenu');
+      if(m) m.classList.remove('open');
+      const sm = document.getElementById('settingsDropdownMenu');
+      if(sm) sm.classList.remove('open');
+    });
+    dropdownGlobalListenerAdded = true;
+  }
+}
+
+function renderGrid(){
+  if(reps.length === 0){
+    app.innerHTML = headerHTML() + `
+    <div class="card" style="max-width:520px;margin:30px auto;text-align:center;">
+      <h3>先建立客服人員名單</h3>
+      <p class="hint">輸入早班客服的姓名或暱稱，用逗號或換行分隔即可。</p>
+      <textarea id="onboardNames" placeholder="例如：\n小美\n阿凱\nChin"></textarea>
+      <button class="primary" id="onboardSubmit" style="margin-top:10px;">建立客服名單</button>
+    </div>`;
+    bindHeaderEvents();
+    document.getElementById('onboardSubmit').addEventListener('click', async ()=>{
+      const val = document.getElementById('onboardNames').value.trim();
+      if(!val) return;
+      await addReps(val);
+    });
+    return;
+  }
+
+  const renderGridCards = (results)=>{
+    const cards = results.map(({rep,count,hasSummary,hasComparison})=>`
+      <div class="rep-card" data-name="${escapeAttr(rep)}">
+        <div class="name">${escapeHtml(rep)}</div>
+        <div class="meta"><span>本月記錄</span><span class="count-badge">${count} 筆</span></div>
+        ${hasSummary ? '<div style="margin-top:8px;font-size:11px;color:var(--gold);font-weight:700;">✓ 已產生本月摘要</div>' : ''}
+        ${hasComparison ? '<div style="margin-top:4px;font-size:11px;color:var(--teal-deep);font-weight:700;">✓ 已產生上月比較</div>' : ''}
+      </div>`).join('');
+
+    app.innerHTML = headerHTML() + `<div class="rep-grid">${cards}<div class="add-rep-card" id="addRepCard">+ 新增客服人員</div></div>`;
+    bindHeaderEvents();
+    document.querySelectorAll('.rep-card').forEach(el=>{
+      el.addEventListener('click', ()=>{ selectedRepId = el.dataset.name; render(); });
+    });
+    document.getElementById('addRepCard').addEventListener('click', renderManageModal);
+  };
+
+  if(gridDataCache[currentMonth]){
+    renderGridCards(gridDataCache[currentMonth]);
+    return;
+  }
+
+  // 立即顯示標頭與載入提示，讓畫面馬上有回饋，不會整個卡住不動等資料抓完才顯示
+  app.innerHTML = headerHTML() + `<div class="card" style="text-align:center;padding:50px 20px;"><div class="loading"><div class="spinner"></div>載入客服列表中...</div></div>`;
+  bindHeaderEvents();
+
+  gsrun('getGridData', [currentMonth]).then(results=>{
+    gridDataCache[currentMonth] = results;
+    renderGridCards(results);
+  }).catch(e=>{
+    app.innerHTML = headerHTML() + `<div class="card"><div class="error">載入客服列表時發生錯誤：${escapeHtml(e && e.message ? e.message : String(e))}</div></div>`;
+    bindHeaderEvents();
+  });
+}
+
+function renderManageModal(){
+  const existing = document.getElementById('manageOverlay');
+  if(existing) existing.remove();
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.id = 'manageOverlay';
+  overlay.innerHTML = `
+    <div class="modal">
+      <h3>管理客服名單</h3>
+      <div id="repList">
+        ${reps.map(r=>`<div class="rep-manage-item"><span>${escapeHtml(r)}</span><button data-name="${escapeAttr(r)}">移除</button></div>`).join('') || '<div style="color:var(--ink-soft);font-size:13px;">目前尚無客服人員</div>'}
+      </div>
+      <div class="field" style="margin-top:14px;">
+        <label>新增客服人員(可用逗號分隔多個)</label>
+        <input type="text" id="newRepInput" placeholder="例如：小明, 阿凱">
+      </div>
+      <button class="primary" id="addRepBtn">新增</button>
+      <button class="modal-close" id="closeManage">關閉</button>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.querySelectorAll('.rep-manage-item button').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{ await removeRepAction(btn.dataset.name); renderManageModal(); });
+  });
+  document.getElementById('addRepBtn').addEventListener('click', async ()=>{
+    const val = document.getElementById('newRepInput').value.trim();
+    if(!val) return;
+    await addReps(val);
+    renderManageModal();
+  });
+  document.getElementById('closeManage').addEventListener('click', ()=>overlay.remove());
+}
+
+function renderContextModal(){
+  const existing = document.getElementById('contextOverlay');
+  if(existing) existing.remove();
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.id = 'contextOverlay';
+  overlay.innerHTML = `
+    <div class="modal" style="max-width:480px;">
+      <h3>記錄判讀說明</h3>
+      <p class="hint">寫下團隊慣例(如班別交接、特殊用語)，產生摘要時會參考這裡的說明。</p>
+      <textarea id="contextTextarea" style="min-height:140px;">${escapeHtml(teamContext)}</textarea>
+      <button class="primary" id="saveContextBtn" style="margin-top:12px;">儲存說明</button>
+      <button class="modal-close" id="closeContext">關閉</button>
+    </div>`;
+  document.body.appendChild(overlay);
+  document.getElementById('saveContextBtn').addEventListener('click', async ()=>{
+    const val = document.getElementById('contextTextarea').value;
+    await saveTeamContextAction(val);
+    overlay.remove();
+  });
+  document.getElementById('closeContext').addEventListener('click', ()=>overlay.remove());
+}
+
+function buildCSV(rows){
+  const esc = (v)=> '"' + String(v==null?'':v).replace(/"/g,'""') + '"';
+  return rows.map(row=>row.map(esc).join(',')).join('\r\n');
+}
+
+function downloadTextFile(filename, content, mime){
+  const blob = new Blob(['\ufeff'+content], {type: mime || 'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+
+async function exportSummariesAction(){
+  exportMessage = '';
+  const selectedReps = reps.filter(r=>overviewSelected.has(r));
+  if(selectedReps.length === 0){
+    exportMessage = '請先在上方勾選要匯出的客服人員。';
+    renderOverview();
+    return;
+  }
+  const rows = [['客服姓名','月份','摘要內容','產生時間']];
+  selectedReps.forEach(rep=>{
+    const s = summaryCache[rep+':'+currentMonth];
+    if(s){
+      const plainText = s.text.replace(/\*\*/g, '');
+      rows.push([rep, monthLabel(currentMonth), plainText, new Date(s.generatedAt).toLocaleString('zh-TW')]);
+    }
+  });
+  if(rows.length === 1){
+    exportMessage = '勾選的客服目前都還沒有產生摘要，請先產生摘要再匯出。';
+    renderOverview();
+    return;
+  }
+  downloadTextFile('月度摘要_'+currentMonth+'.csv', buildCSV(rows));
+  renderOverview();
+}
+
+async function exportComparisonsAction(){
+  exportMessage = '';
+  const selectedReps = reps.filter(r=>overviewSelected.has(r));
+  if(selectedReps.length === 0){
+    exportMessage = '請先在上方勾選要匯出的客服人員。';
+    renderComparisonOverview();
+    return;
+  }
+  const rows = [['客服姓名','月份','比較內容','產生時間']];
+  selectedReps.forEach(rep=>{
+    const c = comparisonCache[rep+':'+currentMonth];
+    if(c){
+      const plainText = c.text.replace(/\*\*/g, '');
+      rows.push([rep, monthLabel(currentMonth), plainText, new Date(c.generatedAt).toLocaleString('zh-TW')]);
+    }
+  });
+  if(rows.length === 1){
+    exportMessage = '勾選的客服目前都還沒有產生比較分析，請先產生比較分析再匯出。';
+    renderComparisonOverview();
+    return;
+  }
+  downloadTextFile('本月與上月比較_'+currentMonth+'.csv', buildCSV(rows));
+  renderComparisonOverview();
+}
+
+async function renderOverview(){
+  if(!allSummariesCache[currentMonth] || !allRecordsCache[currentMonth]){
+    app.innerHTML = headerHTML() + `<div class="card" style="text-align:center;padding:50px 20px;"><div class="loading"><div class="spinner"></div>載入摘要總覽中...</div></div>`;
+    bindHeaderEvents();
+  }
+  const [allSummaries, allRecordsMap] = await Promise.all([
+    allSummariesCache[currentMonth] ? Promise.resolve(allSummariesCache[currentMonth]) : gsrun('getAllSummaries', [currentMonth]),
+    allRecordsCache[currentMonth] ? Promise.resolve(allRecordsCache[currentMonth]) : gsrun('getAllRecords', [currentMonth])
+  ]);
+  allSummariesCache[currentMonth] = allSummaries;
+  allRecordsCache[currentMonth] = allRecordsMap;
+  Object.keys(allSummaries).forEach(rep=>{
+    summaryCache[rep+':'+currentMonth] = allSummaries[rep];
+  });
+
+  const allChecked = reps.length>0 && reps.every(r=>overviewSelected.has(r));
+
+  const checkboxesHTML = reps.map(rep=>`
+    <label class="rep-checkbox">
+      <input type="checkbox" class="repCheck" value="${escapeAttr(rep)}" ${overviewSelected.has(rep)?'checked':''}>
+      <span>${escapeHtml(rep)}</span>
+    </label>
+  `).join('') || '<p class="hint">尚無客服人員，請先在「管理客服名單」新增。</p>';
+
+  const selectedReps = reps.filter(r=>overviewSelected.has(r));
+
+  const summaryCardsHTML = selectedReps.length ? selectedReps.map(rep=>{
+    const key = rep+':'+currentMonth;
+    const summary = summaryCache[key];
+    const isGenerating = !!overviewGenerating[rep];
+    const err = overviewErrors[rep];
+    let body;
+    if(isGenerating){ body = `<div class="loading"><div class="spinner"></div>正在整理摘要...</div>`; }
+    else if(summary){ body = `<div class="note-body">${formatSummary(summary.text, allRecordsMap[rep])}</div><div class="note-meta">產生時間：${new Date(summary.generatedAt).toLocaleString('zh-TW')}</div>`; }
+    else { body = `<div class="note-empty">這個月還沒有產生摘要</div>`; }
+    return `
+      <div class="card">
+        <h3>${escapeHtml(rep)}</h3>
+        <div class="note">${body}</div>
+        ${err ? `<div class="error">${escapeHtml(err)}</div>` : ''}
+        <button class="primary overviewGenBtn" data-rep="${escapeAttr(rep)}" style="margin-top:12px;" ${isGenerating?'disabled':''}>${summary?'重新產生摘要':'產生摘要'}</button>
+      </div>`;
+  }).join('') : '<div class="record-empty">請先在上方勾選要查看的客服人員。</div>';
+
+  const batchSummaryBadgeHTML = batchSummaryResult
+    ? `<span style="color:#8B5A2B;font-weight:700;font-size:13.5px;">${batchSummaryResult.filter(r=>r.status==='success').length} 位成功，${batchSummaryResult.filter(r=>r.status==='skipped').length} 位已跳過(已有摘要)，${batchSummaryResult.filter(r=>r.status==='failed').length} 位失敗</span>`
+    : '';
+  const batchSummaryFailuresHTML = batchSummaryResult
+    ? batchSummaryResult.filter(r=>r.status==='failed').map(r=>`<div class="error">${escapeHtml(r.rep)}：${escapeHtml(r.error)}</div>`).join('')
+    : '';
+
+  app.innerHTML = headerHTML() + `
+    <button class="back-btn" id="backToGridBtn">← 返回客服列表</button>
+    <div class="detail-head">
+      <h2>全部客服・月度摘要總覽</h2>
+      <span class="m-tag">${monthLabel(currentMonth)}</span>
+    </div>
+    <div class="card" style="margin-bottom:18px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+        <h3 style="margin:0;">一鍵產生</h3>
+        ${batchSummaryBadgeHTML}
+      </div>
+      <p class="hint">只會為「這個月還沒有摘要」的客服產生摘要，已經有摘要的客服會自動跳過、不會覆蓋。<br>若要重新產生某位客服的摘要，請到該客服卡片下方按「重新產生摘要」。<br>(每位間隔約 13 秒，避免觸發 AI 服務的速率限制，需要一點時間請耐心等候)。</p>
+      <button class="primary" id="batchSummaryBtn" ${batchSummaryGenerating?'disabled':''}>${batchSummaryGenerating?'產生中，請稍候...':'一鍵產生尚未產生摘要的客服'}</button>
+      ${batchSummaryFailuresHTML}
+    </div>
+    <div class="card" style="margin-bottom:18px;">
+      <h3>選擇要查看的客服</h3>
+      <label class="rep-checkbox" style="font-weight:700;">
+        <input type="checkbox" id="selectAllCheck" ${allChecked?'checked':''}><span>全選</span>
+      </label>
+      <div class="checkbox-grid">${checkboxesHTML}</div>
+      <button class="secondary" id="exportSummaryBtn" style="margin-top:14px;">匯出已勾選客服的摘要 (CSV)</button>
+      ${exportMessage ? `<div class="error">${escapeHtml(exportMessage)}</div>` : ''}
+    </div>
+    <div class="overview-grid">${summaryCardsHTML}</div>
+  `;
+
+  bindHeaderEvents();
+  document.getElementById('backToGridBtn').addEventListener('click', ()=>{ viewMode='grid'; render(); });
+  document.getElementById('batchSummaryBtn').addEventListener('click', generateAllSummariesAction);
+  document.getElementById('exportSummaryBtn').addEventListener('click', exportSummariesAction);
+
+  document.getElementById('selectAllCheck').addEventListener('change', (e)=>{
+    if(e.target.checked){ reps.forEach(r=>overviewSelected.add(r)); }
+    else { overviewSelected.clear(); }
+    renderOverview();
+  });
+  document.querySelectorAll('.repCheck').forEach(cb=>{
+    cb.addEventListener('change', ()=>{
+      if(cb.checked) overviewSelected.add(cb.value); else overviewSelected.delete(cb.value);
+      renderOverview();
+    });
+  });
+  document.querySelectorAll('.overviewGenBtn').forEach(btn=>{
+    btn.addEventListener('click', ()=>generateSummaryForOverview(btn.dataset.rep));
+  });
+}
+
+async function generateAllSummariesAction(){
+  batchSummaryGenerating = true; batchSummaryResult = null; renderOverview();
+  try{
+    const results = await gsrun('generateAllSummaries', [currentMonth, monthLabel(currentMonth)]);
+    batchSummaryResult = results;
+    delete gridDataCache[currentMonth];
+    delete allSummariesCache[currentMonth];
+    allSummariesCache[currentMonth] = await gsrun('getAllSummaries', [currentMonth]);
+    Object.keys(allSummariesCache[currentMonth]).forEach(rep=>{
+      summaryCache[rep+':'+currentMonth] = allSummariesCache[currentMonth][rep];
+    });
+  }catch(e){
+    batchSummaryResult = [{ rep:'', success:false, error: (e && e.message ? e.message : String(e)) }];
+  }finally{
+    batchSummaryGenerating = false;
+    renderOverview();
+  }
+}
+
+async function generateSummaryForOverview(rep){
+  overviewGenerating[rep] = true; overviewErrors[rep]=''; renderOverview();
+  try{
+    const result = await gsrun('generateSummary', [rep, currentMonth, monthLabel(currentMonth)]);
+    summaryCache[rep+':'+currentMonth] = result;
+    delete gridDataCache[currentMonth];
+    delete allSummariesCache[currentMonth];
+  }catch(e){
+    overviewErrors[rep] = '發生錯誤：' + (e && e.message ? e.message : e);
+  }finally{
+    overviewGenerating[rep] = false;
+    renderOverview();
+  }
+}
+
+async function renderRecordsOverview(){
+  if(!allRecordsCache[currentMonth]){
+    app.innerHTML = headerHTML() + `<div class="card" style="text-align:center;padding:50px 20px;"><div class="loading"><div class="spinner"></div>載入記錄總覽中...</div></div>`;
+    bindHeaderEvents();
+  }
+  let allRecordsMap = allRecordsCache[currentMonth];
+  if(!allRecordsMap){
+    allRecordsMap = await gsrun('getAllRecords', [currentMonth]);
+    allRecordsCache[currentMonth] = allRecordsMap;
+  }
+
+  const allChecked = reps.length>0 && reps.every(r=>overviewSelected.has(r));
+  const checkboxesHTML = reps.map(rep=>`
+    <label class="rep-checkbox">
+      <input type="checkbox" class="repCheck" value="${escapeAttr(rep)}" ${overviewSelected.has(rep)?'checked':''}>
+      <span>${escapeHtml(rep)}</span>
+    </label>
+  `).join('') || '<p class="hint">尚無客服人員，請先在「管理客服名單」新增。</p>';
+
+  const selectedReps = reps.filter(r=>overviewSelected.has(r));
+
+  const recordCardsHTML = selectedReps.length ? selectedReps.map(rep=>{
+    const list = allRecordsMap[rep] || [];
+    const itemsHTML = list.length ? list.map(r=>`
+      <div class="record-item">
+        <div class="r-head">
+          <span><span class="type-tag">${r.type==='positive'?'👍🏻':(r.type==='negative'?'👎🏻':(r.type==='note'?'✍🏻':''))}</span>${r.date?escapeHtml(r.date):'未標示日期'}${r.author?'・'+escapeHtml(r.author):''}</span>
+        </div>
+        <div>${escapeHtml(r.content).replace(/\n/g,'<br>')}</div>
+      </div>`).join('') : '<div class="record-empty">這個月還沒有任何記錄</div>';
+    return `
+      <div class="card">
+        <h3>${escapeHtml(rep)}</h3>
+        <p class="hint">共 ${list.length} 筆記錄</p>
+        <div class="record-list" style="max-height:340px;">${itemsHTML}</div>
+      </div>`;
+  }).join('') : '<div class="record-empty">請先在上方勾選要查看的客服人員。</div>';
+
+  app.innerHTML = headerHTML() + `
+    <button class="back-btn" id="backToGridBtn">← 返回客服列表</button>
+    <div class="detail-head"><h2>全部客服・記錄總覽</h2><span class="m-tag">${monthLabel(currentMonth)}</span></div>
+    <div class="card" style="margin-bottom:18px;">
+      <h3>選擇要查看的客服</h3>
+      <label class="rep-checkbox" style="font-weight:700;">
+        <input type="checkbox" id="selectAllCheck" ${allChecked?'checked':''}><span>全選</span>
+      </label>
+      <div class="checkbox-grid">${checkboxesHTML}</div>
+    </div>
+    <div class="overview-grid">${recordCardsHTML}</div>
+  `;
+
+  bindHeaderEvents();
+  document.getElementById('backToGridBtn').addEventListener('click', ()=>{ viewMode='grid'; render(); });
+  document.getElementById('selectAllCheck').addEventListener('change', (e)=>{
+    if(e.target.checked){ reps.forEach(r=>overviewSelected.add(r)); }
+    else { overviewSelected.clear(); }
+    renderRecordsOverview();
+  });
+  document.querySelectorAll('.repCheck').forEach(cb=>{
+    cb.addEventListener('change', ()=>{
+      if(cb.checked) overviewSelected.add(cb.value); else overviewSelected.delete(cb.value);
+      renderRecordsOverview();
+    });
+  });
+}
+
+async function renderComparisonOverview(){
+  const prevMonthKey = shiftMonth(currentMonth, -1);
+  if(!allComparisonsCache[currentMonth] || !allRecordsCache[currentMonth] || !allRecordsCache[prevMonthKey]){
+    app.innerHTML = headerHTML() + `<div class="card" style="text-align:center;padding:50px 20px;"><div class="loading"><div class="spinner"></div>載入比較總覽中...</div></div>`;
+    bindHeaderEvents();
+  }
+  const [allComparisonsMap, allRecordsMap, prevRecordsMap] = await Promise.all([
+    allComparisonsCache[currentMonth] ? Promise.resolve(allComparisonsCache[currentMonth]) : gsrun('getAllComparisons', [currentMonth]),
+    allRecordsCache[currentMonth] ? Promise.resolve(allRecordsCache[currentMonth]) : gsrun('getAllRecords', [currentMonth]),
+    allRecordsCache[prevMonthKey] ? Promise.resolve(allRecordsCache[prevMonthKey]) : gsrun('getAllRecords', [prevMonthKey])
+  ]);
+  allComparisonsCache[currentMonth] = allComparisonsMap;
+  allRecordsCache[currentMonth] = allRecordsMap;
+  allRecordsCache[prevMonthKey] = prevRecordsMap;
+  Object.keys(allComparisonsMap).forEach(rep=>{
+    comparisonCache[rep+':'+currentMonth] = allComparisonsMap[rep];
+  });
+
+  const allChecked = reps.length>0 && reps.every(r=>overviewSelected.has(r));
+  const checkboxesHTML = reps.map(rep=>`
+    <label class="rep-checkbox">
+      <input type="checkbox" class="repCheck" value="${escapeAttr(rep)}" ${overviewSelected.has(rep)?'checked':''}>
+      <span>${escapeHtml(rep)}</span>
+    </label>
+  `).join('') || '<p class="hint">尚無客服人員，請先在「管理客服名單」新增。</p>';
+
+  const selectedReps = reps.filter(r=>overviewSelected.has(r));
+
+  const cardsHTML = selectedReps.length ? selectedReps.map(rep=>{
+    const comparison = allComparisonsMap[rep];
+    const isGenerating = !!comparisonOverviewGenerating[rep];
+    const err = comparisonOverviewErrors[rep];
+    const combinedRecords = (allRecordsMap[rep]||[]).concat(prevRecordsMap[rep]||[]);
+    let body;
+    if(isGenerating){ body = `<div class="loading"><div class="spinner"></div>正在比較本月與上月...</div>`; }
+    else if(comparison){ body = `<div class="note-body">${formatSummary(comparison.text, combinedRecords)}</div><div class="note-meta">產生時間：${new Date(comparison.generatedAt).toLocaleString('zh-TW')}</div>`; }
+    else { body = `<div class="note-empty">這個月還沒有產生比較分析</div>`; }
+    return `
+      <div class="card">
+        <h3>${escapeHtml(rep)}</h3>
+        <div class="note">${body}</div>
+        ${err ? `<div class="error">${escapeHtml(err)}</div>` : ''}
+        <button class="primary comparisonOverviewGenBtn" data-rep="${escapeAttr(rep)}" style="margin-top:12px;" ${isGenerating?'disabled':''}>${comparison?'重新產生比較分析':'產生比較分析'}</button>
+      </div>`;
+  }).join('') : '<div class="record-empty">請先在上方勾選要查看的客服人員。</div>';
+
+  const batchComparisonBadgeHTML = batchComparisonResult
+    ? `<span style="color:#8B5A2B;font-weight:700;font-size:13.5px;">${batchComparisonResult.filter(r=>r.status==='success').length} 位成功，${batchComparisonResult.filter(r=>r.status==='skipped').length} 位已跳過(已有比較)，${batchComparisonResult.filter(r=>r.status==='failed').length} 位失敗</span>`
+    : '';
+  const batchComparisonFailuresHTML = batchComparisonResult
+    ? batchComparisonResult.filter(r=>r.status==='failed').map(r=>`<div class="error">${escapeHtml(r.rep)}：${escapeHtml(r.error)}</div>`).join('')
+    : '';
+
+  app.innerHTML = headerHTML() + `
+    <button class="back-btn" id="backToGridBtn">← 返回客服列表</button>
+    <div class="detail-head">
+      <h2>全部客服・本月 vs 上月分析總覽</h2>
+      <span class="m-tag">${monthLabel(currentMonth)}</span>
+    </div>
+    <div class="card" style="margin-bottom:18px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+        <h3 style="margin:0;">一鍵產生</h3>
+        ${batchComparisonBadgeHTML}
+      </div>
+      <p class="hint">只會為「這個月還沒有比較分析」的客服產生比較分析，已經有的客服會自動跳過、不會覆蓋。<br>若要重新產生某位客服的比較分析，請到該客服卡片下方按「重新產生比較分析」。<br>(每位間隔約 13 秒，避免觸發 AI 服務的速率限制，需要一點時間請耐心等候)。<br>若某位客服上個月沒有記錄，會直接記錄為「無法比較」，視為已完成、不算失敗。</p>
+      <button class="primary" id="batchComparisonBtn" ${batchComparisonGenerating?'disabled':''}>${batchComparisonGenerating?'產生中，請稍候...':'一鍵產生尚未產生比較的客服'}</button>
+      ${batchComparisonFailuresHTML}
+    </div>
+    <div class="card" style="margin-bottom:18px;">
+      <h3>選擇要查看的客服</h3>
+      <label class="rep-checkbox" style="font-weight:700;">
+        <input type="checkbox" id="selectAllCheck" ${allChecked?'checked':''}><span>全選</span>
+      </label>
+      <div class="checkbox-grid">${checkboxesHTML}</div>
+      <button class="secondary" id="exportComparisonBtn" style="margin-top:14px;">匯出已勾選客服的比較分析 (CSV)</button>
+      ${exportMessage ? `<div class="error">${escapeHtml(exportMessage)}</div>` : ''}
+    </div>
+    <div class="overview-grid">${cardsHTML}</div>
+  `;
+
+  bindHeaderEvents();
+  document.getElementById('backToGridBtn').addEventListener('click', ()=>{ viewMode='grid'; render(); });
+  document.getElementById('batchComparisonBtn').addEventListener('click', generateAllComparisonsAction);
+  document.getElementById('exportComparisonBtn').addEventListener('click', exportComparisonsAction);
+  document.getElementById('selectAllCheck').addEventListener('change', (e)=>{
+    if(e.target.checked){ reps.forEach(r=>overviewSelected.add(r)); }
+    else { overviewSelected.clear(); }
+    renderComparisonOverview();
+  });
+  document.querySelectorAll('.repCheck').forEach(cb=>{
+    cb.addEventListener('change', ()=>{
+      if(cb.checked) overviewSelected.add(cb.value); else overviewSelected.delete(cb.value);
+      renderComparisonOverview();
+    });
+  });
+  document.querySelectorAll('.comparisonOverviewGenBtn').forEach(btn=>{
+    btn.addEventListener('click', ()=>generateComparisonForOverview(btn.dataset.rep));
+  });
+}
+
+async function generateAllComparisonsAction(){
+  batchComparisonGenerating = true; batchComparisonResult = null; renderComparisonOverview();
+  try{
+    const results = await gsrun('generateAllComparisons', [currentMonth, monthLabel(currentMonth)]);
+    batchComparisonResult = results;
+    results.forEach(r=>{
+      if(r.status === 'failed'){ comparisonOverviewErrors[r.rep] = r.error; }
+      else if(r.status === 'success'){ delete comparisonOverviewErrors[r.rep]; }
+    });
+    delete gridDataCache[currentMonth];
+    delete allComparisonsCache[currentMonth];
+    allComparisonsCache[currentMonth] = await gsrun('getAllComparisons', [currentMonth]);
+    Object.keys(allComparisonsCache[currentMonth]).forEach(rep=>{
+      comparisonCache[rep+':'+currentMonth] = allComparisonsCache[currentMonth][rep];
+    });
+  }catch(e){
+    batchComparisonResult = [{ rep:'', status:'failed', error: (e && e.message ? e.message : String(e)) }];
+  }finally{
+    batchComparisonGenerating = false;
+    renderComparisonOverview();
+  }
+}
+
+async function generateComparisonForOverview(rep){
+  comparisonOverviewGenerating[rep] = true; comparisonOverviewErrors[rep]=''; renderComparisonOverview();
+  try{
+    const result = await gsrun('generateComparison', [rep, currentMonth, monthLabel(currentMonth)]);
+    if(!allComparisonsCache[currentMonth]) allComparisonsCache[currentMonth] = {};
+    allComparisonsCache[currentMonth][rep] = result;
+    comparisonCache[rep+':'+currentMonth] = result;
+    delete gridDataCache[currentMonth];
+  }catch(e){
+    comparisonOverviewErrors[rep] = '發生錯誤：' + (e && e.message ? e.message : e);
+  }finally{
+    comparisonOverviewGenerating[rep] = false;
+    renderComparisonOverview();
+  }
+}
+
+async function renderDetail(){
+  const rep = selectedRepId;
+  const recKey = rep+':'+currentMonth;
+  const prevMonthKeyForTip = shiftMonth(currentMonth, -1);
+  const isCached = recordsCache[recKey] && summaryCache[recKey]!==undefined && comparisonCache[recKey]!==undefined;
+  if(!isCached){
+    app.innerHTML = headerHTML() + `<div class="card" style="text-align:center;padding:50px 20px;"><div class="loading"><div class="spinner"></div>載入${escapeHtml(rep)}的資料中...</div></div>`;
+    bindHeaderEvents();
+  }
+  const prevListPromise = loadRecordsFor(rep, prevMonthKeyForTip); // 提前開始請求，跟主要資料同時進行，不用排隊等待
+
+  let list, summary, comparison;
+  if(isCached){
+    list = recordsCache[recKey]; summary = summaryCache[recKey]; comparison = comparisonCache[recKey];
+  } else {
+    try{
+      const data = await gsrun('getRepDetail', [rep, currentMonth]);
+      list = data.records || [];
+      summary = data.summary || null;
+      comparison = data.comparison || null;
+      recordsCache[recKey] = list;
+      summaryCache[recKey] = summary;
+      comparisonCache[recKey] = comparison;
+    }catch(e){
+      app.innerHTML = headerHTML() + `
+        <button class="back-btn" id="backBtn">← 返回總覽</button>
+        <div class="card"><div class="error">載入這位客服的資料時發生錯誤：${escapeHtml(e && e.message ? e.message : String(e))}</div></div>`;
+      bindHeaderEvents();
+      document.getElementById('backBtn').addEventListener('click', ()=>{ selectedRepId=null; render(); });
+      return;
+    }
+  }
+
+  const recordItems = list.length ? list.map(r=>`
+    <div class="record-item">
+      <div class="r-head">
+        <span><span class="type-tag">${r.type==='positive'?'👍🏻':(r.type==='negative'?'👎🏻':(r.type==='note'?'✍🏻':''))}</span>${r.date?escapeHtml(r.date):'未標示日期'}${r.author?'・'+escapeHtml(r.author):''}</span>
+        <div class="r-actions">
+          <button class="r-edit" data-id="${escapeAttr(r.id)}">✏️</button>
+          <button class="r-del" data-id="${escapeAttr(r.id)}">🗑️</button>
+        </div>
+      </div>
+      <div>${escapeHtml(r.content).replace(/\n/g,'<br>')}</div>
+    </div>`).join('') : '<div class="record-empty">本月還沒有任何記錄，請在下方新增。</div>';
+
+  let summaryHTML;
+  if(generating){ summaryHTML = `<div class="loading"><div class="spinner"></div>正在整理本月摘要...</div>`; }
+  else if(summary){ summaryHTML = `<div class="note-body">${formatSummary(summary.text, list)}</div><div class="note-meta">產生時間：${new Date(summary.generatedAt).toLocaleString('zh-TW')}</div>`; }
+  else { summaryHTML = `<div class="note-empty">按下方「產生本月摘要」，整理出重點摘要 🍃</div>`; }
+
+  const prevListForTip = comparison ? await prevListPromise : [];
+
+  let comparisonHTML;
+  if(generatingComparison){ comparisonHTML = `<div class="loading"><div class="spinner"></div>正在比較本月與上月...</div>`; }
+  else if(comparison){ comparisonHTML = `<div class="note-body">${formatSummary(comparison.text, list.concat(prevListForTip))}</div><div class="note-meta">產生時間：${new Date(comparison.generatedAt).toLocaleString('zh-TW')}</div>`; }
+  else { comparisonHTML = `<div class="note-empty">按下方「產生本月與上月比較」，看看進步與待加強之處 📊</div>`; }
+
+  const editingRecord = editingRecordId ? list.find(r=>r.id===editingRecordId) : null;
+
+  app.innerHTML = headerHTML() + `
+    <button class="back-btn" id="backBtn">← 返回總覽</button>
+    <div class="detail-head"><h2>${escapeHtml(rep)}</h2><span class="m-tag">${monthLabel(currentMonth)}</span></div>
+    <div class="detail-grid">
+      <div class="card">
+        <h3>本月記錄</h3>
+        <p class="hint">共 ${list.length} 筆記錄</p>
+        <div class="record-list">${recordItems}</div>
+        ${editingRecord ? `<p class="hint" style="color:var(--teal-deep);font-weight:700;">正在修改 ${escapeHtml(editingRecord.date||'')} 這筆記錄</p>` : ''}
+        ${editingRecord ? `
+        <div class="field">
+          <label>這筆記錄是 *</label>
+          <div class="type-row">
+            <button type="button" class="type-btn positive ${editFormDraft.type==='positive'?'active':''}" id="editTypePositiveBtn">👍🏻 優點</button>
+            <button type="button" class="type-btn negative ${editFormDraft.type==='negative'?'active':''}" id="editTypeNegativeBtn">👎🏻 待改善</button>
+            <button type="button" class="type-btn type-note ${editFormDraft.type==='note'?'active':''}" id="editTypeNoteBtn">✍🏻 記錄</button>
+          </div>
+        </div>
+        <div class="field"><label>日期 *</label><input type="text" id="editRecDate" value="${escapeAttr(editFormDraft.date)}" placeholder="7/10"></div>
+        <div class="field"><label>記錄人 *</label>
+          <select id="editRecAuthor">
+            <option value="">請選擇</option>
+            ${AUTHOR_OPTIONS.map(em=>`<option value="${em}" ${editFormDraft.author===em ? 'selected':''}>${em}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field"><label>狀況內容 *</label><textarea id="editRecContent" placeholder="描述今天遇到的狀況...">${escapeHtml(editFormDraft.content)}</textarea></div>
+        <div class="error" id="singleFormError" style="display:none;"></div>
+        <button class="primary" id="saveEditBtn">儲存修改</button>
+        <button class="secondary" id="cancelEditBtn">取消修改</button>
+        ` : `
+        <div class="field"><label>日期 *</label><input type="text" id="recDate" value="${escapeAttr(formDraft.date)}" placeholder="7/10"></div>
+        <div class="field"><label>記錄人 *</label>
+          <select id="recAuthor">
+            <option value="">請選擇</option>
+            ${AUTHOR_OPTIONS.map(em=>`<option value="${em}" ${formDraft.author===em ? 'selected':''}>${em}</option>`).join('')}
+          </select>
+        </div>
+        ${formDraft.entries.map((entry, idx)=>`
+        <div class="entry-block">
+          ${formDraft.entries.length>1 ? `
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <label style="margin:0;">狀況內容 ${idx+1} *</label>
+            <button type="button" class="entry-remove-btn" data-index="${idx}" style="background:none;border:none;color:var(--rose);font-size:12px;font-weight:700;cursor:pointer;padding:0;">🗑️ 移除這筆</button>
+          </div>` : `<label>狀況內容 *</label>`}
+          <div class="type-row" style="margin-bottom:8px;">
+            <button type="button" class="type-btn positive entry-type-btn ${entry.type==='positive'?'active':''}" data-index="${idx}" data-type="positive">👍🏻 優點</button>
+            <button type="button" class="type-btn negative entry-type-btn ${entry.type==='negative'?'active':''}" data-index="${idx}" data-type="negative">👎🏻 待改善</button>
+            <button type="button" class="type-btn type-note entry-type-btn ${entry.type==='note'?'active':''}" data-index="${idx}" data-type="note">✍🏻 記錄</button>
+          </div>
+          <textarea class="entry-content-input" data-index="${idx}" placeholder="描述今天遇到的狀況...">${escapeHtml(entry.content)}</textarea>
+        </div>`).join('')}
+        <button type="button" class="secondary" id="addEntryBtn" style="margin-top:12px;">＋ 新增一筆狀況內容</button>
+        <div class="error" id="singleFormError" style="display:none;margin-top:10px;"></div>
+        <button class="primary" id="addSingleBtn" style="margin-top:10px;">新增這些記錄</button>
+        `}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:18px;">
+        <div class="card">
+          <h3>月度摘要</h3>
+          <p class="hint">彙整本月所有記錄，作為考核評分參考與約談方向依據。</p>
+          <div class="note">${summaryHTML}</div>
+          ${genError ? `<div class="error">${escapeHtml(genError)}</div>` : ''}
+          <button class="primary" id="genSummaryBtn" style="margin-top:12px;" ${generating?'disabled':''}>${summary?'重新產生摘要':'產生本月摘要'}</button>
+          ${summary ? `<div class="actions"><button id="copySummaryBtn">複製摘要文字</button></div>` : ''}
+        </div>
+        <div class="card">
+          <h3>本月 vs 上月比較</h3>
+          <p class="hint">對照上個月記錄，看出哪裡進步了、哪裡還需要加強。</p>
+          <div class="note">${comparisonHTML}</div>
+          ${comparisonError ? `<div class="error">${escapeHtml(comparisonError)}</div>` : ''}
+          <button class="primary" id="genComparisonBtn" style="margin-top:12px;" ${generatingComparison?'disabled':''}>${comparison?'重新產生比較分析':'產生本月與上月比較'}</button>
+          ${comparison ? `<div class="actions"><button id="copyComparisonBtn">複製比較內容</button></div>` : ''}
+        </div>
+      </div>
+    </div>`;
+
+  bindHeaderEvents();
+  document.getElementById('backBtn').addEventListener('click', ()=>{ selectedRepId=null; editingRecordId=null; resetFormDraft(); resetEditFormDraft(); render(); });
+  document.querySelectorAll('.r-edit').forEach(btn=>btn.addEventListener('click', ()=>{
+    const r = list.find(x=>x.id===btn.dataset.id);
+    editingRecordId = btn.dataset.id;
+    editFormDraft = { date:r.date||'', author:r.author||'', type:r.type||'', content:r.content||'' };
+    render();
+  }));
+  document.querySelectorAll('.r-del').forEach(btn=>btn.addEventListener('click', ()=>{
+    if(editingRecordId===btn.dataset.id){ editingRecordId=null; resetEditFormDraft(); }
+    deleteRecordAction(rep, currentMonth, btn.dataset.id);
+  }));
+
+  if(editingRecord){
+    // 欄位輸入時即時同步進 editFormDraft，避免重畫動作清空已填內容
+    const editDateEl = document.getElementById('editRecDate');
+    const editAuthorEl = document.getElementById('editRecAuthor');
+    const editContentEl = document.getElementById('editRecContent');
+    editDateEl.addEventListener('input', ()=>{ editFormDraft.date = editDateEl.value; });
+    editAuthorEl.addEventListener('change', ()=>{ editFormDraft.author = editAuthorEl.value; });
+    editContentEl.addEventListener('input', ()=>{ editFormDraft.content = editContentEl.value; });
+    document.getElementById('editTypePositiveBtn').addEventListener('click', ()=>{ editFormDraft.type='positive'; render(); });
+    document.getElementById('editTypeNegativeBtn').addEventListener('click', ()=>{ editFormDraft.type='negative'; render(); });
+    document.getElementById('editTypeNoteBtn').addEventListener('click', ()=>{ editFormDraft.type='note'; render(); });
+
+    document.getElementById('saveEditBtn').addEventListener('click', async ()=>{
+      const date = editFormDraft.date.trim();
+      const author = editFormDraft.author.trim();
+      const content = editFormDraft.content.trim();
+      const type = editFormDraft.type;
+      const errBox = document.getElementById('singleFormError');
+      if(!date || !author || !content || !type){ errBox.textContent='日期、記錄人、狀況內容、優點/待改善/記錄都是必填欄位。'; errBox.style.display='block'; return; }
+      await updateRecordAction(rep, currentMonth, editingRecordId, date, author, content, type);
+      editingRecordId = null;
+      resetEditFormDraft();
+      render();
+    });
+    document.getElementById('cancelEditBtn').addEventListener('click', ()=>{ editingRecordId = null; resetEditFormDraft(); render(); });
+  } else {
+    // 欄位輸入時即時同步進 formDraft，避免任何重畫動作(切換優缺點、刪除其他記錄等)清空已填內容
+    const dateEl = document.getElementById('recDate');
+    const authorEl = document.getElementById('recAuthor');
+    dateEl.addEventListener('input', ()=>{ formDraft.date = dateEl.value; });
+    authorEl.addEventListener('change', ()=>{ formDraft.author = authorEl.value; });
+
+    document.querySelectorAll('.entry-content-input').forEach(ta=>{
+      ta.addEventListener('input', ()=>{
+        const idx = parseInt(ta.dataset.index, 10);
+        formDraft.entries[idx].content = ta.value;
+      });
+    });
+    document.querySelectorAll('.entry-type-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const idx = parseInt(btn.dataset.index, 10);
+        formDraft.entries[idx].type = btn.dataset.type;
+        render();
+      });
+    });
+    document.querySelectorAll('.entry-remove-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const idx = parseInt(btn.dataset.index, 10);
+        formDraft.entries.splice(idx, 1);
+        render();
+      });
+    });
+    document.getElementById('addEntryBtn').addEventListener('click', ()=>{
+      formDraft.entries.push({ type:'', content:'' });
+      render();
+    });
+
+    document.getElementById('addSingleBtn').addEventListener('click', async ()=>{
+      const date = formDraft.date.trim();
+      const author = formDraft.author.trim();
+      const errBox = document.getElementById('singleFormError');
+      if(!date || !author){ errBox.textContent='日期、記錄人為必填欄位。'; errBox.style.display='block'; return; }
+      const entries = formDraft.entries;
+      for(let i=0;i<entries.length;i++){
+        if(!entries[i].type || !entries[i].content.trim()){
+          errBox.textContent = '第 ' + (i+1) + ' 筆狀況內容尚未完整(需選擇優點/待改善/記錄，並填寫內容)。';
+          errBox.style.display = 'block';
+          return;
+        }
+      }
+      errBox.style.display = 'none';
+      for(const entry of entries){
+        await addRecordAction(rep, currentMonth, date, author, entry.content.trim(), entry.type);
+      }
+      resetFormDraft();
+      render();
+    });
+  }
+
+  document.getElementById('genSummaryBtn').addEventListener('click', ()=>generateSummaryAction(rep, currentMonth));
+  const copyBtn = document.getElementById('copySummaryBtn');
+  if(copyBtn){
+    copyBtn.addEventListener('click', async ()=>{
+      const s = await loadSummaryFor(rep, currentMonth);
+      if(!s) return;
+      try{ await navigator.clipboard.writeText(s.text); copyBtn.textContent='已複製 ✓'; }
+      catch(e){ copyBtn.textContent='複製失敗'; }
+      setTimeout(()=>{ copyBtn.textContent='複製摘要文字'; }, 1500);
+    });
+  }
+
+  document.getElementById('genComparisonBtn').addEventListener('click', ()=>generateComparisonAction(rep, currentMonth));
+  const copyComparisonBtn = document.getElementById('copyComparisonBtn');
+  if(copyComparisonBtn){
+    copyComparisonBtn.addEventListener('click', async ()=>{
+      const c = await loadComparisonFor(rep, currentMonth);
+      if(!c) return;
+      try{ await navigator.clipboard.writeText(c.text); copyComparisonBtn.textContent='已複製 ✓'; }
+      catch(e){ copyComparisonBtn.textContent='複製失敗'; }
+      setTimeout(()=>{ copyComparisonBtn.textContent='複製比較內容'; }, 1500);
+    });
+  }
+}
+
+function escapeHtml(str){ const div=document.createElement('div'); div.textContent = str==null?'':str; return div.innerHTML; }
+function escapeAttr(str){ return (str||'').replace(/"/g,'&quot;'); }
+function formatSummary(text, records){
+  let safe = escapeHtml(text);
+  safe = safe.replace(/\*\*(.+?)\*\*/g, '<span class="sum-title">$1</span>');
+  safe = safe.replace(/\n/g, '<br>');
+  if(records && records.length){
+    const dateMap = {};
+    records.forEach(r=>{
+      if(!r.date) return;
+      if(!dateMap[r.date]) dateMap[r.date] = [];
+      dateMap[r.date].push(r.content);
+    });
+    safe = safe.replace(/\(([0-9]{1,2}\/[0-9]{1,2}(?:[、,，][0-9]{1,2}\/[0-9]{1,2})*)\)/g, (whole, inner)=>{
+      const parts = inner.split(/[、,，]/);
+      const wrapped = parts.map(p=>{
+        const d = p.trim();
+        const contents = dateMap[d];
+        if(contents && contents.length){
+          const tip = escapeHtml(contents.join(' ／ '));
+          return `<span class="date-tip">${escapeHtml(d)}<span class="tip-bubble">${tip}</span></span>`;
+        }
+        return escapeHtml(d);
+      }).join('、');
+      return '(' + wrapped + ')';
+    });
+  }
+  return safe;
+}
+
+init();
+</script>
+</body>
+</html>
